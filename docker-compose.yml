@@ -1,0 +1,18 @@
+version: '3'
+services:
+  psql:
+    image: 'postgres:10'
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-support}'
+      POSTGRES_DB: '${DB_DATABASE:-support}'
+      POSTGRES_USER: '${DB_USERNAME:-support}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-support}'
+    volumes:
+      - './data:/var/lib/postgresql/data'
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}"]
+      retries: 3
+      timeout: 5s
+
