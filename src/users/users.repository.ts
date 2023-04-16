@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common' ;
+import { Injectable } from '@nestjs/common';
 import { Prisma, User as PrismaUser } from '@prisma/client';
 import { IFindMany } from 'src/contracts/base.repository';
 import { PrismaService } from 'src/prisma.service';
@@ -7,7 +7,7 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
-  
+
   async create(data: Prisma.UserCreateInput): Promise<User> {
     const user = await this.prisma.user.create({ data });
 
@@ -20,8 +20,12 @@ export class UserRepository {
     );
   }
 
-  async find(where: Prisma.UserWhereUniqueInput): Promise<User|undefined> {
+  async find(where: Prisma.UserWhereUniqueInput): Promise<User | undefined> {
     const user = await this.prisma.user.findUnique({ where });
+
+    if (!user) {
+      return undefined;
+    }
 
     return new User(
       user?.id,
@@ -32,7 +36,7 @@ export class UserRepository {
     );
   }
 
-  async findMany(params?: IFindMany): Promise<User[]|undefined> {
+  async findMany(params?: IFindMany): Promise<User[] | undefined> {
     const users = await this.prisma.user.findMany(params);
 
     return users.map(
@@ -47,7 +51,10 @@ export class UserRepository {
     );
   }
 
-  async update(where: Prisma.UserWhereUniqueInput, data: Prisma.UserUpdateInput): Promise<User|undefined> {
+  async update(
+    where: Prisma.UserWhereUniqueInput,
+    data: Prisma.UserUpdateInput,
+  ): Promise<User | undefined> {
     const user = await this.prisma.user.update({ where, data });
 
     return new User(
@@ -59,7 +66,7 @@ export class UserRepository {
     );
   }
 
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User|undefined> {
+  async delete(where: Prisma.UserWhereUniqueInput): Promise<User | undefined> {
     const user = await this.prisma.user.delete({ where });
 
     return new User(

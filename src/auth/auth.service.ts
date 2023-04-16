@@ -12,9 +12,9 @@ export class AuthService {
 
   async signIn(username: string, password: string) {
     const user = await this.userRepository.find({ username });
-    const hashMatches = await bcrypt.compare(password, user.password);
+    const hashMatches = !user ? false : await bcrypt.compare(password, user?.password);
 
-    if (! user || ! hashMatches) {
+    if (!hashMatches) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
